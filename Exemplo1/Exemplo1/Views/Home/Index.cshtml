@@ -1,0 +1,45 @@
+﻿@{
+    ViewBag.Title = "Exemplo JQuery + Json";
+}
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#estado").change(function () {
+                listaCidade($(this).val());
+            });
+        });
+
+        //chamada ajax para a Action ListaCidade        
+        //passando como parâmetro a Estado selecionado        
+        function listaCidade(siglaUf) {
+            //Chamando o metodo do controller para retornar um JSON
+            $.ajax({
+                url: '/Home/carregaCidade',
+                type: 'POST',
+                data: { uf: siglaUf },
+                dataType: 'json',
+                success: function (result) {
+                    $("#cidade").empty();
+                    $(result).each(function () {                        
+                        //adicionando as opções de acordo com o retorno                
+                        $("#cidade").append("<option value='" + this.Nome + "'>" + this.Nome + "</option>");
+                    });
+                },
+                error: function () {
+                    alert('Erro! Não foi possível carregar as Cidades.');
+                }
+            });
+
+        }
+    </script>
+    <section>
+        <div>
+           <h3>@ViewBag.Title</h3>
+
+            <p>
+                @Html.DropDownList("estado",(IEnumerable<SelectListItem>)ViewBag.Estado, "Selecione")
+
+                <select class="form-control" id="cidade"></select>                   
+            </p>
+        </div>
+    </section>
